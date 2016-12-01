@@ -308,6 +308,8 @@ public class AddressBook {
      * Returns true if the given file is acceptable.
      * The file path is acceptable if it ends in '.txt'
      * TODO: Implement a more rigorous validity checking.
+     * Note: Access modifier was changed from private to 
+     * protected so as to test the method.
      */
     protected static boolean isValidFilePath(String filePath) {
         if (filePath == null) {
