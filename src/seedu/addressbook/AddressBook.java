@@ -309,10 +309,17 @@ public class AddressBook {
      * The file path is acceptable if it ends in '.txt'
      * TODO: Implement a more rigorous validity checking.
      */
-    private static boolean isValidFilePath(String filePath) {
-        return filePath.endsWith(".txt");
+    protected static boolean isValidFilePath(String filePath) {
+        if (filePath == null) {
+            return false;
+        }
+        File fileFromPath = new File(filePath);     
+        if (fileFromPath.isDirectory()) {
+            return false;
+        }
+        return fileFromPath.exists();
     }
-
+    
     /**
      * Initialises the in-memory data using the storage file.
      * Assumption: The file exists.
