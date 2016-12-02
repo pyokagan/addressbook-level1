@@ -56,7 +56,7 @@ public class AddressBook {
     private static final String FILE_PATH_SEPARATOR = "\\" + File.separator;
     private static final Pattern VALID_FILE_PATH_ARGS = Pattern.compile(
             "^(?<diskDrive>[a-zA-Z]:)?" + 
-            "(?<file>"+ FILE_PATH_SEPARATOR + FILE_PATH_SEPARATOR +"?[a-zA-Z0-9 _.-]+)*" +
+            "(?<file>(" + FILE_PATH_SEPARATOR + "|\\/)[a-zA-Z0-9 _.-]+)*" +
             "(?<fileExtension>\\.txt)$");
 
     /*
