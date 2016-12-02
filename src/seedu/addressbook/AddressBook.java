@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -50,6 +52,9 @@ public class AddressBook {
      * A platform independent line separator.
      */
     private static final String LS = System.lineSeparator() + LINE_PREFIX;
+    
+    private static final Pattern VALID_FILE_PATH_ARGS = Pattern.compile(
+            "^(?<diskDrive>[a-zA-Z]:)?(?<file>\\\\\\\\?[a-zA-Z0-9 _.-]+)*(?<fileExtension>\\.txt)$");
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -306,20 +311,18 @@ public class AddressBook {
 
     /**
      * Returns true if the given file is acceptable.
-     * The file path is acceptable if it ends in '.txt'
+     * The file path is acceptable if it ends in '.txt', contains a disk drive
+     * and does not contain reserved characters. 
+     * Maximum of 2 backslashes are allowed to define a path directory.
+     * i.e. C://folder/file.txt
      * TODO: Implement a more rigorous validity checking.
-     * Note: Access modifier was changed from private to 
-     * protected so as to test the method.
      */
     protected static boolean isValidFilePath(String filePath) {
         if (filePath == null) {
             return false;
         }
-        File fileFromPath = new File(filePath);     
-        if (fileFromPath.isDirectory()) {
-            return false;
-        }
-        return fileFromPath.exists();
+        final Matcher matcher = VALID_FILE_PATH_ARGS.matcher(filePath);
+        return matcher.matches();
     }
     
     /**
