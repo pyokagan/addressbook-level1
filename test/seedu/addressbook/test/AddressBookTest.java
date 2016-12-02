@@ -23,25 +23,24 @@ public class AddressBookTest extends AddressBook {
         assertFalse(isValidFilePath(helper.generateRandomFolder(testFolder)));        
         assertFalse(isValidFilePath(helper.generateInvalidPathWithNoFileName()));
         assertFalse(isValidFilePath(helper.generateInvalidPathWithInvalidFileName()));
-        assertFalse(isValidFilePath(helper.generateInvalidPathWithTripleBackSlash()));
+        assertFalse(isValidFilePath(helper.generateInvalidPathWithDoubleSeparator()));
         assertFalse(isValidFilePath(helper.generateInvalidPathReservedChar()));
     }
     
     @Test
     public void isValidFilePath_valid() throws Exception {
         TestFilePathValidHelper helper = new TestFilePathValidHelper();
-        assertTrue(isValidFilePath(helper.generateValidPathWithSingleBackSlash()));
-        assertTrue(isValidFilePath(helper.generateValidPathWithDoubleBackSlash()));
-        assertTrue(isValidFilePath(helper.generateValidPathWithMixedBackSlash()));
+        assertTrue(isValidFilePath(helper.generateValidPathWithSingleSeparator()));
+        assertTrue(isValidFilePath(helper.generateValidPathWithMixedSeparator()));
     }
     
     /**
      * Utility class that generates valid and invalid paths to test
      */
     class TestFilePathValidHelper {
-        private static final String SINGLE_BACKSLASH = "\\";
-        private static final String DOUBLE_BACKSLASH = "\\\\";
-        private static final String TRIPLE_BACKSLASH = "\\\\\\";
+        private final String SINGLE_SEPARATOR = File.separator;
+        private final String DOUBLE_SEPARATOR = SINGLE_SEPARATOR + SINGLE_SEPARATOR;
+        private final String SINGLE_FORWARD_SLASH = "/";
         private static final String DISK_DRIVE = "c:";
         private static final String PATH_VALID_UNDERSCORE = "legit_dir";
         private static final String PATH_VALID_SPACE = "legit dir";
@@ -50,54 +49,78 @@ public class AddressBookTest extends AddressBook {
         private static final String FILE_NAME_INVALID = ".txt";
         private static final String FILE_NAME_INVALID_RESERVED_CHAR = "legit file?321.txt";
         
-        public String generateValidPathWithSingleBackSlash() {
+        /**
+         * Generates a valid path with a single separator.
+         * I.E c:\folder1\folder2\file.txt
+         */
+        public String generateValidPathWithSingleSeparator() {
             final StringBuilder builder = new StringBuilder();
-            builder.append(DISK_DRIVE).append(SINGLE_BACKSLASH).append(PATH_VALID_UNDERSCORE)
-                    .append(SINGLE_BACKSLASH).append(PATH_VALID_SPACE).append(FILE_NAME_VALID);
+            builder.append(DISK_DRIVE).append(SINGLE_SEPARATOR).append(PATH_VALID_UNDERSCORE)
+                    .append(SINGLE_SEPARATOR).append(PATH_VALID_SPACE).append(FILE_NAME_VALID);
             return builder.toString();
         }
-
-        public String generateValidPathWithDoubleBackSlash() {
+        
+        public String generateValidPathWithSingleForwardSlash() {
             final StringBuilder builder = new StringBuilder();
-            builder.append(DISK_DRIVE).append(DOUBLE_BACKSLASH).append(PATH_VALID_SPACE)
-            .append(DOUBLE_BACKSLASH).append(PATH_VALID_UNDERSCORE).append(FILE_NAME_VALID);
-            return builder.toString();
-        }        
+            builder.append(DISK_DRIVE).append(SINGLE_FORWARD_SLASH).append(PATH_VALID_UNDERSCORE)
+                    .append(SINGLE_FORWARD_SLASH).append(PATH_VALID_SPACE).append(FILE_NAME_VALID);
+            return builder.toString();            
+        }
 
-        public String generateValidPathWithMixedBackSlash() {
+        /**
+         * Generates a valid path with a mix of separators, both forward and backslashes
+         */
+        public String generateValidPathWithMixedSeparator() {
             final StringBuilder builder = new StringBuilder();
-            builder.append(DISK_DRIVE).append(SINGLE_BACKSLASH).append(PATH_VALID_UNDERSCORE)
-            .append(DOUBLE_BACKSLASH).append(PATH_VALID_SPACE).append(FILE_NAME_VALID);
+            builder.append(DISK_DRIVE).append(SINGLE_SEPARATOR).append(PATH_VALID_UNDERSCORE)
+            .append(SINGLE_FORWARD_SLASH).append(PATH_VALID_SPACE).append(FILE_NAME_VALID);
             return builder.toString();
         }                
-        
+
+        /**
+         * Generates an invalid path with no file name
+         */
         public String generateInvalidPathWithNoFileName() {
             final StringBuilder builder = new StringBuilder();
-            builder.append(DISK_DRIVE).append(SINGLE_BACKSLASH).append(PATH_VALID_UNDERSCORE)
-            .append(SINGLE_BACKSLASH).append(FILE_NAME_INVALID);
+            builder.append(DISK_DRIVE).append(SINGLE_SEPARATOR).append(PATH_VALID_UNDERSCORE)
+            .append(SINGLE_SEPARATOR).append(FILE_NAME_INVALID);
+            return builder.toString();
+        }
+
+        /**
+         * Generates an invalid path with no file name
+         */
+        public String generateInvalidPathWithInvalidFileName() {
+            final StringBuilder builder = new StringBuilder();
+            builder.append(generateValidPathWithSingleSeparator()).append(FILE_NAME_INVALID_RESERVED_CHAR);
+            return builder.toString();
+        }     
+
+        /**
+         * Generates an invalid path with reserved characters
+         * i.e C:/folder/tes?.txt"
+         */
+        public String generateInvalidPathReservedChar() {
+            final StringBuilder builder = new StringBuilder();
+            builder.append(DISK_DRIVE).append(SINGLE_SEPARATOR).append(PATH_INVALID_RESERVED_CHAR)
+                    .append(SINGLE_SEPARATOR).append(FILE_NAME_VALID);
             return builder.toString();
         }
         
-        public String generateInvalidPathWithInvalidFileName() {
+        /**
+         * Generates an invalid path with a double separator 
+         * I.E c://folder1//folder2//file.txt
+         */
+        public String generateInvalidPathWithDoubleSeparator() {
             final StringBuilder builder = new StringBuilder();
-            builder.append(generateValidPathWithSingleBackSlash()).append(FILE_NAME_INVALID_RESERVED_CHAR);
-            return builder.toString();
-        }
-
-        public String generateInvalidPathWithTripleBackSlash() {
-            final StringBuilder builder = new StringBuilder();
-            builder.append(DISK_DRIVE).append(TRIPLE_BACKSLASH).append(PATH_VALID_UNDERSCORE)
-                    .append(SINGLE_BACKSLASH).append(FILE_NAME_VALID);
-            return builder.toString();
-        }        
-
-        public String generateInvalidPathReservedChar() {
-            final StringBuilder builder = new StringBuilder();
-            builder.append(DISK_DRIVE).append(SINGLE_BACKSLASH).append(PATH_INVALID_RESERVED_CHAR)
-                    .append(SINGLE_BACKSLASH).append(FILE_NAME_VALID);
+            builder.append(DISK_DRIVE).append(DOUBLE_SEPARATOR).append(PATH_VALID_SPACE)
+            .append(DOUBLE_SEPARATOR).append(PATH_VALID_UNDERSCORE).append(FILE_NAME_VALID);
             return builder.toString();
         }                
         
+        /**
+         * Generates a random folder without a file using TemporaryFolder 
+         */
         public String generateRandomFolder(TemporaryFolder testFolder) throws Exception {
             File randomFolder = testFolder.newFolder();
             return randomFolder.getPath();
