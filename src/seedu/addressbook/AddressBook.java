@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +22,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.sun.media.jfxmedia.logging.Logger;
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -314,18 +318,49 @@ public class AddressBook {
 
     /**
      * Returns true if the given file is acceptable.
-     * The file path is acceptable if it ends in '.txt', contains a disk drive
-     * and does not contain reserved characters. 
+     * The file path is acceptable if it does not contain reserved string and
+     * ends with an extension. 
      * Maximum of 2 backslashes are allowed to define a path directory.
      * i.e. C://folder/file.txt
      * TODO: Implement a more rigorous validity checking.
      */
     protected static boolean isValidFilePath(String filePath) {
+        return isValidPath(filePath) && isValidFileName(filePath);
+    }
+    
+    /**
+     * Returns true if the path is valid.
+     * Path is valid if it is a directory and it's parent exist.
+     */
+    private static boolean isValidPath(String filePath) {
         if (filePath == null) {
             return false;
         }
-        final Matcher matcher = VALID_FILE_PATH_ARGS.matcher(filePath);
-        return matcher.matches();
+        File pathToValidate = new File(filePath);
+        if (!pathToValidate.isDirectory()) {
+            pathToValidate = pathToValidate.getParentFile();
+        }
+        if (pathToValidate == null) {
+            return true;
+        }
+        return pathToValidate.exists();
+    }
+    
+    /**
+     * Returns true if the file is valid.
+     * File is valid if it has a name and an extension.
+     */
+    private static boolean isValidFileName(String filePath) {
+        if (filePath == null) {
+            return false;
+        }
+        try {
+            File fileNameToValidate = new File(filePath).getCanonicalFile();
+            int extIdxSeparator = fileNameToValidate.getName().lastIndexOf(".");
+            return extIdxSeparator > 0;
+        } catch (IOException ioe) {
+            return false;
+        }
     }
     
     /**
