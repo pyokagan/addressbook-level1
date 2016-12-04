@@ -9,8 +9,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,10 +18,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.sun.media.jfxmedia.logging.Logger;
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -36,6 +31,10 @@ import com.sun.media.jfxmedia.logging.Logger;
  * in a text file.
  **/
 public class AddressBook {
+
+    private static final String FILE_EXTENSION_DELIMETER = ".";
+
+    private static final int EMPTY_FILE_NAME = 0;
 
     /**
      * Default file path used if the user doesn't provide the file name.
@@ -56,12 +55,6 @@ public class AddressBook {
      * A platform independent line separator.
      */
     private static final String LS = System.lineSeparator() + LINE_PREFIX;
-    
-    private static final String FILE_PATH_SEPARATOR = "\\" + File.separator;
-    private static final Pattern VALID_FILE_PATH_ARGS = Pattern.compile(
-            "^(?<diskDrive>[a-zA-Z]:)?" + 
-            "(?<file>(" + FILE_PATH_SEPARATOR + "|\\/)[a-zA-Z0-9 _.-]+)*" +
-            "(?<fileExtension>\\.txt)$");
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -318,10 +311,8 @@ public class AddressBook {
 
     /**
      * Returns true if the given file is acceptable.
-     * The file path is acceptable if it does not contain reserved string and
-     * ends with an extension. 
-     * Maximum of 2 backslashes are allowed to define a path directory.
-     * i.e. C://folder/file.txt
+     * The file path is acceptable if it does not contain any reserved string,
+     * contains a valid file name and valid path. 
      * TODO: Implement a more rigorous validity checking.
      */
     protected static boolean isValidFilePath(String filePath) {
@@ -356,8 +347,8 @@ public class AddressBook {
         }
         try {
             File fileNameToValidate = new File(filePath).getCanonicalFile();
-            int extIdxSeparator = fileNameToValidate.getName().lastIndexOf(".");
-            return extIdxSeparator > 0;
+            int extIdxSeparator = fileNameToValidate.getName().lastIndexOf(FILE_EXTENSION_DELIMETER);
+            return extIdxSeparator > EMPTY_FILE_NAME;
         } catch (IOException ioe) {
             return false;
         }

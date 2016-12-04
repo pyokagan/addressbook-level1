@@ -3,6 +3,7 @@ package seedu.addressbook.test;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,31 +16,36 @@ public class AddressBookTest extends AddressBook {
     public TemporaryFolder testFolder = new TemporaryFolder();
     
     @Test
-    public void isValidFilePath_invalid() throws Exception {
-        assertFalse(isValidFilePath(""));
+    public void isValidFilePathInvalid() throws Exception {
         assertFalse(isValidFilePath(null));
+        assertFalse(isValidFilePath(""));
+        assertFalse(isValidFilePath(" ")); 
         
-        TestFilePathValidHelper helper = new TestFilePathValidHelper();
-        assertFalse(isValidFilePath(helper.generateRandomFolder(testFolder)));        
+        TestFilePathValidHelper helper = new TestFilePathValidHelper(testFolder);
+        assertFalse(isValidFilePath(helper.generateRandomFolder()));        
         assertFalse(isValidFilePath(helper.generateInvalidPathWithNoFileName()));
         assertFalse(isValidFilePath(helper.generateInvalidPathWithInvalidFileName()));
-        assertFalse(isValidFilePath(helper.generateInvalidPathWithDoubleSeparator()));
         assertFalse(isValidFilePath(helper.generateInvalidPathReservedChar()));
     }
     
     @Test
-    public void isValidFilePath_valid() throws Exception {
-        TestFilePathValidHelper helper = new TestFilePathValidHelper();
+    public void isValidFilePathValid() throws Exception {
+        TestFilePathValidHelper helper = new TestFilePathValidHelper(testFolder);       
         assertTrue(isValidFilePath(helper.generateValidPathWithSingleSeparator()));
+        assertTrue(isValidFilePath(helper.generateValidPathWithDoubleSeparator()));
         assertTrue(isValidFilePath(helper.generateValidPathWithMixedSeparator()));
+        assertTrue(isValidFilePath(helper.generateValidRelativePath()));
     }
     
     /**
      * Utility class that generates valid and invalid paths to test
      */
     class TestFilePathValidHelper {
+        private static final String RELATIVE_PATH_TEST = "test";
         private final String SINGLE_SEPARATOR = File.separator;
+        private final String SINGLE_SEPARATOR_ARGS = "\\" + SINGLE_SEPARATOR;
         private final String DOUBLE_SEPARATOR = SINGLE_SEPARATOR + SINGLE_SEPARATOR;
+        private final String DOUBLE_SEPARATOR_ARGS = "\\\\" + DOUBLE_SEPARATOR;        
         private final String SINGLE_FORWARD_SLASH = "/";
         private static final String DISK_DRIVE = "c:";
         private static final String PATH_VALID_UNDERSCORE = "legit_dir";
@@ -49,14 +55,19 @@ public class AddressBookTest extends AddressBook {
         private static final String FILE_NAME_INVALID = ".txt";
         private static final String FILE_NAME_INVALID_RESERVED_CHAR = "legit file?321.txt";
         
+        private File randomFolder;
+        
+        public TestFilePathValidHelper(TemporaryFolder testFolder) throws IOException {
+            this.randomFolder = testFolder.newFolder();
+        }
+        
         /**
          * Generates a valid path with a single separator.
          * I.E c:\folder1\folder2\file.txt
          */
         public String generateValidPathWithSingleSeparator() {
             final StringBuilder builder = new StringBuilder();
-            builder.append(DISK_DRIVE).append(SINGLE_SEPARATOR).append(PATH_VALID_UNDERSCORE)
-                    .append(SINGLE_SEPARATOR).append(PATH_VALID_SPACE).append(FILE_NAME_VALID);
+            builder.append(randomFolder.getPath()).append(SINGLE_SEPARATOR).append(FILE_NAME_VALID);
             return builder.toString();
         }
         
@@ -72,11 +83,30 @@ public class AddressBookTest extends AddressBook {
          */
         public String generateValidPathWithMixedSeparator() {
             final StringBuilder builder = new StringBuilder();
-            builder.append(DISK_DRIVE).append(SINGLE_SEPARATOR).append(PATH_VALID_UNDERSCORE)
-            .append(SINGLE_FORWARD_SLASH).append(PATH_VALID_SPACE).append(FILE_NAME_VALID);
+            builder.append(randomFolder.getPath()).append(SINGLE_FORWARD_SLASH).append(FILE_NAME_VALID);
             return builder.toString();
         }                
-
+        
+        /**
+         * Generates a valid path with using double separators.
+         */
+        public String generateValidPathWithDoubleSeparator() {
+            final StringBuilder builder = new StringBuilder();
+            String doubleSeparatorStr = randomFolder.getPath();
+            doubleSeparatorStr = doubleSeparatorStr.replaceAll(SINGLE_SEPARATOR_ARGS, DOUBLE_SEPARATOR_ARGS);
+            builder.append(doubleSeparatorStr).append(DOUBLE_SEPARATOR).append(FILE_NAME_VALID);
+            return builder.toString();
+        }
+        
+        /**
+         * Generates a valid relative path.
+         */
+        public String generateValidRelativePath() {
+            final StringBuilder builder = new StringBuilder();
+            builder.append(RELATIVE_PATH_TEST).append(SINGLE_SEPARATOR).append(FILE_NAME_VALID);
+            return builder.toString();
+        }
+        
         /**
          * Generates an invalid path with no file name
          */
@@ -105,23 +135,12 @@ public class AddressBookTest extends AddressBook {
             builder.append(DISK_DRIVE).append(SINGLE_SEPARATOR).append(PATH_INVALID_RESERVED_CHAR)
                     .append(SINGLE_SEPARATOR).append(FILE_NAME_VALID);
             return builder.toString();
-        }
-        
-        /**
-         * Generates an invalid path with a double separator 
-         * I.E c://folder1//folder2//file.txt
-         */
-        public String generateInvalidPathWithDoubleSeparator() {
-            final StringBuilder builder = new StringBuilder();
-            builder.append(DISK_DRIVE).append(DOUBLE_SEPARATOR).append(PATH_VALID_SPACE)
-            .append(DOUBLE_SEPARATOR).append(PATH_VALID_UNDERSCORE).append(FILE_NAME_VALID);
-            return builder.toString();
-        }                
+        }          
         
         /**
          * Generates a random folder without a file using TemporaryFolder 
          */
-        public String generateRandomFolder(TemporaryFolder testFolder) throws Exception {
+        public String generateRandomFolder() throws Exception {
             File randomFolder = testFolder.newFolder();
             return randomFolder.getPath();
         }
