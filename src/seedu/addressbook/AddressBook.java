@@ -18,7 +18,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.regex.Pattern;
+
+import seedu.addressbook.util.FilePathUtil;
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -31,11 +32,6 @@ import java.util.regex.Pattern;
  * in a text file.
  **/
 public class AddressBook {
-
-    private static final String FILE_EXTENSION_DELIMETER = ".";
-
-    private static final int EMPTY_FILE_NAME = 0;
-
     /**
      * Default file path used if the user doesn't provide the file name.
      */
@@ -281,7 +277,7 @@ public class AddressBook {
      */
     private static void setupGivenFileForStorage(String filePath) {
 
-        if (!isValidFilePath(filePath)) {
+        if (!FilePathUtil.isValidFilePath(filePath)) {
             showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
             exitProgram();
         }
@@ -307,51 +303,6 @@ public class AddressBook {
         showToUser(MESSAGE_USING_DEFAULT_FILE);
         storageFilePath = DEFAULT_STORAGE_FILEPATH;
         createFileIfMissing(storageFilePath);
-    }
-
-    /**
-     * Returns true if the given file is acceptable.
-     * The file path is acceptable if it does not contain any reserved string,
-     * contains a valid file name and valid path. 
-     * TODO: Implement a more rigorous validity checking.
-     */
-    protected static boolean isValidFilePath(String filePath) {
-        return isValidPath(filePath) && isValidFileName(filePath);
-    }
-    
-    /**
-     * Returns true if the path is valid.
-     * Path is valid if it is a directory and it's parent exist.
-     */
-    private static boolean isValidPath(String filePath) {
-        if (filePath == null) {
-            return false;
-        }
-        File pathToValidate = new File(filePath);
-        if (!pathToValidate.isDirectory()) {
-            pathToValidate = pathToValidate.getParentFile();
-        }
-        if (pathToValidate == null) {
-            return true;
-        }
-        return pathToValidate.exists();
-    }
-    
-    /**
-     * Returns true if the file is valid.
-     * File is valid if it has a name and an extension.
-     */
-    private static boolean isValidFileName(String filePath) {
-        if (filePath == null) {
-            return false;
-        }
-        try {
-            File fileNameToValidate = new File(filePath).getCanonicalFile();
-            int extIdxSeparator = fileNameToValidate.getName().lastIndexOf(FILE_EXTENSION_DELIMETER);
-            return extIdxSeparator > EMPTY_FILE_NAME;
-        } catch (IOException ioe) {
-            return false;
-        }
     }
     
     /**
