@@ -26,6 +26,7 @@ public class FilePathUtilTest {
         assertFalse(FilePathUtil.isValidFilePath(helper.generateInvalidPathWithNoFileName()));
         assertFalse(FilePathUtil.isValidFilePath(helper.generateInvalidPathWithInvalidFileName()));
         assertFalse(FilePathUtil.isValidFilePath(helper.generateInvalidPathReservedChar()));
+        assertFalse(FilePathUtil.isValidFilePath(helper.generateInvalidRelativePath()));
     }
     
     @Test
@@ -60,7 +61,7 @@ public class FilePathUtilTest {
         public TestFilePathValidHelper(TemporaryFolder testFolder) throws IOException {
             this.randomFolder = testFolder.newFolder();
         }
-        
+
         /**
          * Generates a valid path with a single separator.
          * I.E c:\folder1\folder2\file.txt
@@ -143,6 +144,16 @@ public class FilePathUtilTest {
         public String generateRandomFolder() throws Exception {
             File randomFolder = testFolder.newFolder();
             return randomFolder.getPath();
+        }
+        
+        /**
+         * Generates an invalid relative path using reserved characters
+         */
+        public String generateInvalidRelativePath() {
+            final StringBuilder builder = new StringBuilder();
+            builder.append(RELATIVE_PATH_TEST).append(SINGLE_SEPARATOR).append(PATH_INVALID_RESERVED_CHAR)
+                    .append(SINGLE_SEPARATOR).append(FILE_NAME_VALID);
+            return builder.toString();
         }
     }
 }
