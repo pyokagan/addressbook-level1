@@ -3,11 +3,16 @@ package seedu.addressbook.util;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * This is a utility class for file path validation.
+ */
 public class FilePathUtil {
+    private static final int EXTENSION_INVALID_INDEX = 0;
+
     /**
      * Returns true if the given file is acceptable.
-     * The file path is acceptable if it does not contain any reserved characters (<>:"/|?*),
-     * has a filename and an extension.
+     * The file path is acceptable if it does not contain any reserved characters <>:"/|?*,
+     * has a filename with an extension.
      * TODO: Implement a more rigorous validity checking.
      */
     public static boolean isValidFilePath(String filePath) {
@@ -16,8 +21,8 @@ public class FilePathUtil {
     
     /**
      * Returns true if the path is valid.
-     * Path is valid if there is no reserved characters used and the parent path exists.
-     * Path is valid if it is a directory and it's parent exist.
+     * Path is valid if there is no reserved characters used, if it is a directory.
+     * If path is not a directory, the path is valid if it's parent folder exists.
      */
     private static boolean isValidPath(String filePath) {
         if (filePath == null) {
@@ -44,7 +49,7 @@ public class FilePathUtil {
     
     /**
      * Returns true if the file is valid.
-     * File is valid if it has a name and an extension.
+     * File is valid if it has a name, an extension and no reserved characters <>:"/|?*.
      */
     private static boolean isValidFileName(String filePath) {
         if (filePath == null) {
@@ -53,7 +58,7 @@ public class FilePathUtil {
         try {
             File fileNameToValidate = new File(filePath).getCanonicalFile();
             int extensionSeparatorIndex = fileNameToValidate.getName().lastIndexOf(".");
-            return extensionSeparatorIndex > 0;
+            return extensionSeparatorIndex > EXTENSION_INVALID_INDEX;
         } catch (IOException ioe) {
             return false;
         }
