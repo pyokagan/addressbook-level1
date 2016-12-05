@@ -9,32 +9,32 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import seedu.addressbook.AddressBook;
+import seedu.addressbook.util.FilePathUtil;
 
-public class AddressBookTest extends AddressBook {
+public class FilePathUtilTest {
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
     
     @Test
     public void isValidFilePathInvalid() throws Exception {
-        assertFalse(isValidFilePath(null));
-        assertFalse(isValidFilePath(""));
-        assertFalse(isValidFilePath(" ")); 
+        assertFalse(FilePathUtil.isValidFilePath(null));
+        assertFalse(FilePathUtil.isValidFilePath(""));
+        assertFalse(FilePathUtil.isValidFilePath(" ")); 
         
         TestFilePathValidHelper helper = new TestFilePathValidHelper(testFolder);
-        assertFalse(isValidFilePath(helper.generateRandomFolder()));        
-        assertFalse(isValidFilePath(helper.generateInvalidPathWithNoFileName()));
-        assertFalse(isValidFilePath(helper.generateInvalidPathWithInvalidFileName()));
-        assertFalse(isValidFilePath(helper.generateInvalidPathReservedChar()));
+        assertFalse(FilePathUtil.isValidFilePath(helper.generateRandomFolder()));        
+        assertFalse(FilePathUtil.isValidFilePath(helper.generateInvalidPathWithNoFileName()));
+        assertFalse(FilePathUtil.isValidFilePath(helper.generateInvalidPathWithInvalidFileName()));
+        assertFalse(FilePathUtil.isValidFilePath(helper.generateInvalidPathReservedChar()));
     }
     
     @Test
     public void isValidFilePathValid() throws Exception {
         TestFilePathValidHelper helper = new TestFilePathValidHelper(testFolder);       
-        assertTrue(isValidFilePath(helper.generateValidPathWithSingleSeparator()));
-        assertTrue(isValidFilePath(helper.generateValidPathWithDoubleSeparator()));
-        assertTrue(isValidFilePath(helper.generateValidPathWithMixedSeparator()));
-        assertTrue(isValidFilePath(helper.generateValidRelativePath()));
+        assertTrue(FilePathUtil.isValidFilePath(helper.generateValidPathWithSingleSeparator()));
+        assertTrue(FilePathUtil.isValidFilePath(helper.generateValidPathWithDoubleSeparator()));
+        assertTrue(FilePathUtil.isValidFilePath(helper.generateValidPathWithMixedSeparator()));
+        assertTrue(FilePathUtil.isValidFilePath(helper.generateValidRelativePath()));
     }
     
     /**
