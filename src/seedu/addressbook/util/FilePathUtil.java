@@ -10,10 +10,10 @@ public class FilePathUtil {
     private static final int EXTENSION_INVALID_INDEX = 0;
 
     /**
-     * Returns true if the given file is acceptable.
-     * The file path is acceptable if it has a folder that exists
+     * Returns true if the given file path is acceptable.
+     * The file path is acceptable if it has a folder that exists,
      * has a file name that is acceptable to the operating system eg. does not contain <>:"/|?*,
-     * Fila nem must also contain an extentsion
+     * File name must also contain an extentsion
      */
     public static boolean isValidFilePath(String filePath) {
         if (filePath == null) {
@@ -39,8 +39,8 @@ public class FilePathUtil {
     }
     
     /**
-     * Returns true if the file is valid.
-     * File is valid if it has a name, an extension and no reserved characters <>:"/|?*.
+     * Returns true if file path has a valid file name.
+     * File name is valid if it has an extension and no reserved characters <>:"/|?*.
      */
     private static boolean hasValidFileName(File filePath) {
         try {
