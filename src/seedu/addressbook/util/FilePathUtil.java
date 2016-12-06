@@ -23,11 +23,7 @@ public class FilePathUtil {
         if (!hasValidFileName(filePathToValidate)) {
             return false;
         }
-        if (!hasValidFolder(filePathToValidate)) {
-            return false;
-        }
-        return true;
-        
+        return hasValidFolder(filePathToValidate);
     }
     
     /**
