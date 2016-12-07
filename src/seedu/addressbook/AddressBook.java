@@ -314,8 +314,7 @@ public class AddressBook {
             return false;
         }
         File filePathToValidate = new File(filePath);
-        return hasValidFileName(filePathToValidate) && 
-                hasValidFolder(filePathToValidate);
+        return hasValidFileName(filePathToValidate) && hasValidFolder(filePathToValidate);
     }
     
     /**
