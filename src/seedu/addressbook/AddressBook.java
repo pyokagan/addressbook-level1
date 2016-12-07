@@ -19,8 +19,6 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 
-import seedu.addressbook.util.FilePathUtil;
-
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
  * use this class are documented elsewhere.
@@ -277,7 +275,7 @@ public class AddressBook {
      */
     private static void setupGivenFileForStorage(String filePath) {
 
-        if (!FilePathUtil.isValidFilePath(filePath)) {
+        if (!isValidFilePath(filePath)) {
             showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
             exitProgram();
         }
@@ -304,6 +302,43 @@ public class AddressBook {
         storageFilePath = DEFAULT_STORAGE_FILEPATH;
         createFileIfMissing(storageFilePath);
     }
+    
+    /**
+     * Returns true if the given file path is acceptable.
+     * The file path is acceptable if it has a folder that exists,
+     * has a file name that is acceptable to the operating system,
+     * File name must also contain an extentsion
+     */
+    private static boolean isValidFilePath(String filePath) {
+        if (filePath == null) {
+            return false;
+        }
+        File filePathToValidate = new File(filePath);
+        return hasValidFileName(filePathToValidate) && 
+                hasValidFolder(filePathToValidate);
+    }
+    
+    /**
+     * Returns true if the file path has a folder that exists
+     */
+    private static boolean hasValidFolder(File filePath) {
+        File folderToValidate = filePath.getAbsoluteFile().getParentFile();
+        return folderToValidate.exists();
+    }
+    
+    /**
+     * Returns true if file path has a valid file name.
+     * File name is valid if it has an extension and no reserved characters.
+     */
+    private static boolean hasValidFileName(File filePath) {
+        try {
+            File fileNameToValidate = new File(filePath.getName()).getCanonicalFile();
+            int extensionSeparatorIndex = fileNameToValidate.getName().lastIndexOf(".");
+            return extensionSeparatorIndex > 0;
+        } catch (IOException ioe) {
+            return false;
+        }
+    }    
     
     /**
      * Initialises the in-memory data using the storage file.
