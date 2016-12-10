@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +31,7 @@ import java.util.Set;
  * in a text file.
  **/
 public class AddressBook {
+
     /**
      * Default file path used if the user doesn't provide the file name.
      */
@@ -302,12 +304,12 @@ public class AddressBook {
         storageFilePath = DEFAULT_STORAGE_FILEPATH;
         createFileIfMissing(storageFilePath);
     }
-    
+
     /**
      * Returns true if the given file path is acceptable.
      * The file path is acceptable if it has a folder that exists,
-     * has a file name that is acceptable to the operating system,
-     * File name must also contain an extentsion
+     * has a file name that is acceptable to the OS,
+     * File name must also contain an extension
      */
     private static boolean isValidFilePath(String filePath) {
         if (filePath == null) {
@@ -316,7 +318,7 @@ public class AddressBook {
         File filePathToValidate = new File(filePath);
         return hasValidFileName(filePathToValidate) && hasValidFolder(filePathToValidate);
     }
-    
+
     /**
      * Returns true if the file path has a folder that exists
      */
@@ -324,21 +326,22 @@ public class AddressBook {
         File folderToValidate = filePath.getAbsoluteFile().getParentFile();
         return folderToValidate.exists();
     }
-    
+
     /**
      * Returns true if file path has a valid file name.
      * File name is valid if it has an extension and no reserved characters.
+     * Reserved characters are OS-dependent.
      */
     private static boolean hasValidFileName(File filePath) {
         try {
-            File fileNameToValidate = new File(filePath.getName()).getCanonicalFile();
-            int extensionSeparatorIndex = fileNameToValidate.getName().lastIndexOf(".");
+            Paths.get(filePath.getName());
+            int extensionSeparatorIndex = filePath.getName().lastIndexOf(".");
             return extensionSeparatorIndex > 0;
-        } catch (IOException ioe) {
+        } catch (InvalidPathException ipe) {
             return false;
         }
-    }    
-    
+    }
+
     /**
      * Initialises the in-memory data using the storage file.
      * Assumption: The file exists.
