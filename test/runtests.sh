@@ -13,7 +13,11 @@ fi
 javac  ../src/seedu/addressbook/AddressBook.java -d ../bin
 
 # run the program, feed commands from input.txt file and redirect the output to the actual.txt
-java -classpath ../bin seedu.addressbook.AddressBook < input.txt > actual.txt
+java -classpath ../bin seedu.addressbook.AddressBook " " < /dev/null > actual.txt
+java -classpath ../bin seedu.addressbook.AddressBook 'directoryThatDoesNotExist/valid.filename' < /dev/null >> actual.txt
+java -classpath ../bin seedu.addressbook.AddressBook '.noFilename' < /dev/null >> actual.txt
+java -classpath ../bin seedu.addressbook.AddressBook 'invalid.filename?' < /dev/null >> actual.txt
+java -classpath ../bin seedu.addressbook.AddressBook < input.txt >> actual.txt
 
 # compare the output to the expected output
 diff actual.txt expected.txt
