@@ -7,10 +7,9 @@ REM compile the code into the bin folder
 javac  ..\src\seedu\addressbook\Addressbook.java -d ..\bin
 
 REM run the program, feed commands from input.txt file and redirect the output to the actual.txt
-java -classpath ..\bin seedu.addressbook.AddressBook %" " > actual.txt
-java -classpath ..\bin seedu.addressbook.AddressBook %"directoryThatDoesNotExist/valid.filename" >> actual.txt
-java -classpath ..\bin seedu.addressbook.AddressBook %".noFilename" >> actual.txt
-java -classpath ..\bin seedu.addressbook.AddressBook %"invalid.filename?" >> actual.txt
+java -classpath ..\bin seedu.addressbook.AddressBook " " < NUL > actual.txt
+java -classpath ..\bin seedu.addressbook.AddressBook "directoryThatDoesNotExist/valid.filename" < NUL >> actual.txt
+java -classpath ..\bin seedu.addressbook.AddressBook ".noFilename" < NUL >> actual.txt
 java -classpath ..\bin seedu.addressbook.AddressBook < input.txt >> actual.txt
 
 REM compare the output to the expected output
