@@ -10,6 +10,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -306,25 +308,32 @@ public class AddressBook {
     }
 
     /**
-     * Returns true if the given file path is acceptable.
-     * The file path is acceptable if it has a folder that exists,
-     * has a file name that is acceptable to the OS,
-     * File name must also contain an extension
+     * Returns true if the given file path is valid.
+     * A file path is valid if it has a valid parent directory as determined by {@link #hasValidFolder}
+     * and a valid file name as determined by {@link #hasValidFileName}.
      */
     private static boolean isValidFilePath(String filePath) {
         if (filePath == null) {
             return false;
         }
-        File filePathToValidate = new File(filePath);
-        return hasValidFileName(filePathToValidate) && hasValidFolder(filePathToValidate);
+        try {
+            Path filePathToValidate = Paths.get(filePath);
+            return hasValidParentDirectory(filePathToValidate) && hasValidFileName(filePathToValidate);
+        } catch (InvalidPathException ipe) {
+            return false;
+        }
     }
 
     /**
-     * Returns true if the file path has a folder that exists
+     * Returns true if the file path has a parent directory that exists
      */
-    private static boolean hasValidFolder(File filePath) {
-        File folderToValidate = filePath.getAbsoluteFile().getParentFile();
-        return folderToValidate.exists();
+    private static boolean hasValidParentDirectory(Path filePath) {
+        Path parentDirectory = filePath.getParent();
+        if (parentDirectory == null) {
+            return true;
+        }
+        return Files.isDirectory(parentDirectory, LinkOption.NOFOLLOW_LINKS) 
+                && Files.exists(parentDirectory, LinkOption.NOFOLLOW_LINKS);
     }
 
     /**
@@ -332,14 +341,12 @@ public class AddressBook {
      * File name is valid if it has an extension and no reserved characters.
      * Reserved characters are OS-dependent.
      */
-    private static boolean hasValidFileName(File filePath) {
-        try {
-            Paths.get(filePath.getName());
-            int extensionSeparatorIndex = filePath.getName().lastIndexOf(".");
-            return extensionSeparatorIndex > 0;
-        } catch (InvalidPathException ipe) {
+    private static boolean hasValidFileName(Path filePath) {
+        if (Files.isDirectory(filePath, LinkOption.NOFOLLOW_LINKS)) {
             return false;
         }
+        Path fileName = filePath.getFileName();
+        return fileName.toString().lastIndexOf(".") > 0;
     }
 
     /**
