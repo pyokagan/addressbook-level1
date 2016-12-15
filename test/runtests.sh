@@ -16,8 +16,12 @@ javac  ../src/seedu/addressbook/AddressBook.java -d ../bin
 java -classpath ../bin seedu.addressbook.AddressBook ' ' < /dev/null > actual.txt
 java -classpath ../bin seedu.addressbook.AddressBook 'directoryThatDoesNotExist/valid.filename' < /dev/null >> actual.txt
 java -classpath ../bin seedu.addressbook.AddressBook '.noFilename' < /dev/null >> actual.txt
+mkdir -p data
+touch data/addressbook.txt
+java -classpath ../bin seedu.addressbook.AddressBook 'data/addressbook.txt' < exitinput.txt >> actual.txt
+mkdir -p data/notRegularFile.txt
+java -classpath ../bin seedu.addressbook.AddressBook 'data/notRegularFile.txt' < /dev/null >> actual.txt
 java -classpath ../bin seedu.addressbook.AddressBook < input.txt >> actual.txt
-
 # compare the output to the expected output
 diff actual.txt expected.txt
 if [ $? -eq 0 ]
