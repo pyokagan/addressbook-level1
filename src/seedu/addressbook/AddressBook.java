@@ -316,37 +316,32 @@ public class AddressBook {
         if (filePath == null) {
             return false;
         }
+        Path filePathToValidate = null;
         try {
-            Path filePathToValidate = Paths.get(filePath);
-            return hasValidParentDirectory(filePathToValidate) && hasValidFileName(filePathToValidate);
+            filePathToValidate = Paths.get(filePath);
         } catch (InvalidPathException ipe) {
             return false;
         }
+        return hasValidParentDirectory(filePathToValidate) && hasValidFileName(filePathToValidate);
     }
 
     /**
-     * Returns true if the file path has a parent directory that exists
+     * Returns true if the file path has a parent directory that exists.
      */
     private static boolean hasValidParentDirectory(Path filePath) {
         Path parentDirectory = filePath.getParent();
-        if (parentDirectory == null) {
-            return true;
-        }
-        return Files.isDirectory(parentDirectory, LinkOption.NOFOLLOW_LINKS) 
-                && Files.exists(parentDirectory, LinkOption.NOFOLLOW_LINKS);
+        return parentDirectory == null || Files.isDirectory(parentDirectory);
     }
 
     /**
      * Returns true if file path has a valid file name.
      * File name is valid if it has an extension and no reserved characters.
      * Reserved characters are OS-dependent.
+     * File name provided must also be a regular file.
      */
     private static boolean hasValidFileName(Path filePath) {
-        if (Files.isDirectory(filePath, LinkOption.NOFOLLOW_LINKS)) {
-            return false;
-        }
-        Path fileName = filePath.getFileName();
-        return fileName.toString().lastIndexOf(".") > 0;
+        return filePath.getFileName().toString().lastIndexOf('.') > 0 
+                && (!Files.exists(filePath) || Files.isRegularFile(filePath));
     }
 
     /**
