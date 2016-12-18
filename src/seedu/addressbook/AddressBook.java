@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -337,10 +336,10 @@ public class AddressBook {
      * Returns true if file path has a valid file name.
      * File name is valid if it has an extension and no reserved characters.
      * Reserved characters are OS-dependent.
-     * File name provided must also be a regular file.
+     * If a file already exists, it must be a regular file.
      */
     private static boolean hasValidFileName(Path filePath) {
-        return filePath.getFileName().toString().lastIndexOf('.') > 0 
+        return filePath.getFileName().toString().lastIndexOf('.') > 0
                 && (!Files.exists(filePath) || Files.isRegularFile(filePath));
     }
 
