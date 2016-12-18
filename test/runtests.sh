@@ -12,17 +12,18 @@ fi
 # compile the code into the bin folder
 javac  ../src/seedu/addressbook/AddressBook.java -d ../bin
 
-# run the program and pass in invalid file paths
+# (invalid) no parent directory, invalid filename with no extension
 java -classpath ../bin seedu.addressbook.AddressBook ' ' < /dev/null > actual.txt
+# (invalid) invalid parent directory that does not exist, valid filename
 java -classpath ../bin seedu.addressbook.AddressBook 'directoryThatDoesNotExist/valid.filename' < /dev/null >> actual.txt
+# (invalid) no parent directory, invalid filename with dot on first character
 java -classpath ../bin seedu.addressbook.AddressBook '.noFilename' < /dev/null >> actual.txt
-# run the program and pass in valid a file path
-mkdir -p data
-touch data/addressbook.txt
-java -classpath ../bin seedu.addressbook.AddressBook 'data/addressbook.txt' < exitinput.txt >> actual.txt
-# run the program and pass in a non regular file (a directory with the name data/notRegularFile.txt)
+# (invalid) valid parent directory, non regular file
 mkdir -p data/notRegularFile.txt
 java -classpath ../bin seedu.addressbook.AddressBook 'data/notRegularFile.txt' < /dev/null >> actual.txt
+# (valid) valid parent directory, valid filename with extension.
+touch data/valid.filename
+java -classpath ../bin seedu.addressbook.AddressBook 'data/valid.filename' < exitinput.txt >> actual.txt
 # run the program, feed commands from input.txt file and redirect the output to the actual.txt
 java -classpath ../bin seedu.addressbook.AddressBook < input.txt >> actual.txt
 
