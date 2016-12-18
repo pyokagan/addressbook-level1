@@ -315,7 +315,7 @@ public class AddressBook {
         if (filePath == null) {
             return false;
         }
-        Path filePathToValidate = null;
+        Path filePathToValidate;
         try {
             filePathToValidate = Paths.get(filePath);
         } catch (InvalidPathException ipe) {
