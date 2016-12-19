@@ -13,7 +13,7 @@ java -classpath ..\bin seedu.addressbook.AddressBook "directoryThatDoesNotExist/
 REM (invalid) no parent directory, invalid filename with dot on first character
 java -classpath ..\bin seedu.addressbook.AddressBook ".noFilename" < NUL >> actual.txt
 REM (invalid) valid parent directory, non regular file
-mkdir data\notRegularFile.txt
+if not exist data\notRegularFile.txt mkdir data\notRegularFile.txt
 java -classpath ..\bin seedu.addressbook.AddressBook "data/notRegularFile.txt" < NUL >> actual.txt
 REM (valid) valid parent directory, valid filename with extension.
 copy /y NUL data\valid.filename
