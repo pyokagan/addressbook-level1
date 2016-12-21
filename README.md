@@ -108,10 +108,10 @@ Example:
 * `java seedu.addressbook.AddressBook mydata.txt`
 * `java seedu.addressbook.AddressBook myFolder/mydata.txt`
 
-> The file path must contain a valid file name and a valid parent directory.
-> File name is valid if it has an extension and no reserved characters(OS-dependent).
-> Parent directory is valid if the parent directory exists.
-> If a file already exists, it must be a regular file.
+> The file path must contain a valid file name and a valid parent directory.<br>
+  File name is valid if it has an extension and no reserved characters(OS-dependent).<br>
+  Parent directory is valid if the parent directory exists.<br>
+  If a file already exists, it must be a regular file.<br>
 
 > When running the program inside Eclipse, there is a way to set command line parameters 
   before running the program.
